@@ -242,7 +242,7 @@ parse_options() {
   [ -e "${CONFIG_FILE}" ] ||
     die "\`${CONFIG_FILE}' does not exist"
   #shellcheck disable=SC2003
-  expr match "${CONFIG_FILE}"'\(.*/\)\?\([a-zA-Z0-9_=+.-]\{1,15\}\)\.conf$' >/dev/null ||
+  expr match "${CONFIG_FILE}" '\(.*/\)\?\([a-zA-Z0-9_=+.-]\{1,15\}\)\.conf$' >/dev/null ||
     die 'The config file must be a valid interface name, followed by .conf'
   CONFIG_FILE="$(readlink -f "${CONFIG_FILE}")"
   if {
@@ -758,7 +758,7 @@ cmd_usage() {
         state of the interface upon shutdown.
 
     See wg-quick(8) for more info and examples.
-    _EOF
+_EOF
 }
 
 cmd_up() {
