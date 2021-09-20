@@ -4,6 +4,29 @@
 
 # posix shells: dash ash (posh?)
 
+# install to openwrt:
+# scp vpn-pia.posix.sh wg-quick.posix.sh ca.rsa.4096.crt root@192.168.1.1:/root/
+# cp piavpn.config.sh.sample piavpn.config.sh
+# nano piavpn.config.sh # edit your config
+# scp piavpn.config.sh root@192.168.1.1:/etc/
+
+# FIXME wg-quick.posix.sh fails on openwrt
+# 
+# INFO Start Wireguard connection: ./wg-quick.posix.sh up 'pia'
+# [#] ip link add pia type wireguard
+# [#] wg setconf pia /tmp/tmp.ijGMpM
+# [#] ip -4 address add 10.7.135.47 dev pia
+# sed: unmatched ':'
+# sed: unmatched ':'
+# [#] ip link set mtu 1420 up dev pia
+# ./wg-quick.posix.sh: line 442: can't open /etc/resolvconf/interface-order: no such file
+# [#] resolvconf -a pia -m 0 -x
+# ./wg-quick.posix.sh: line 222: resolvconf: not found
+# [#] ip link delete dev pia
+# FATAL Failed to start Wireguard interface 'pia'
+# root@OpenWrt:~# resolvconf
+# -ash: resolvconf: not found
+
 # FIXME
 # INFO Refreshed port 21051 on server 212.102.49.36 (madrid402) on 2021-05-01 03:25:27 +0200
 # ...........................curl: (28) Failed to connect to 10.35.128.1 port 19999: Connection timed out
@@ -204,6 +227,12 @@ if false; then
 fi
 
 
+
+# https://x-lore.kernel.org/wireguard/CACgDUr4BfbaLaP_csACp3Dk6c9GJ4py2w5TwurFjzZrhK1OPcQ@mail.gmail.com/T/
+wg_quick='./wg-quick.posix.sh'
+
+
+
 main() {
   # parse CLI arguments
   [ "$#" = '0' ] && { show_help; exit 0; }
@@ -346,8 +375,8 @@ EOF
 }
 
 stop_wireguard() {
-  warn "Disabe wireguard interface '${wireguard_ifname}': wg-quick down '${wireguard_ifname}'"
-  wg-quick down "${wireguard_ifname}"
+  warn "Disabe wireguard interface '${wireguard_ifname}': $wg_quick down '${wireguard_ifname}'"
+  $wg_quick down "${wireguard_ifname}"
   $has_manual_gateway && ip route del "$server_ip"
 }
 
@@ -371,8 +400,8 @@ connect_to_wireguard() {
   wireguard_ifname=pia
 
   # todo check if connection exists
-  info "Disable old Wireguard connection: wg-quick down '${wireguard_ifname}'"
-  wg-quick down "${wireguard_ifname}"
+  info "Disable old Wireguard connection: $wg_quick down '${wireguard_ifname}'"
+  $wg_quick down "${wireguard_ifname}"
 
   info 'Write Wireguard config to /etc/wireguard/pia.conf'
   mkdir -p '/etc/wireguard'
@@ -388,8 +417,8 @@ connect_to_wireguard() {
   server_vip=$(json_get "$addkey_json" .server_vip)
   peer_ip=$(json_get "$addkey_json" .peer_ip)
 
-  info "Start Wireguard connection: wg-quick up '$wireguard_ifname'"
-  wg-quick up "$wireguard_ifname" \
+  info "Start Wireguard connection: $wg_quick up '$wireguard_ifname'"
+  $wg_quick up "$wireguard_ifname" \
   || fatal "Failed to start Wireguard interface '${wireguard_ifname}'"
 
   # test the connection
@@ -422,8 +451,8 @@ connect_to_wireguard() {
 
   success "Connected to Wireguard server $server_name"
   if $has_manual_gateway
-  then info "To disconnect from VPN, run: wg-quick down $wireguard_ifname; ip route del $server_ip"
-  else info "To disconnect from VPN, run: wg-quick down $wireguard_ifname"
+  then info "To disconnect from VPN, run: $wg_quick down $wireguard_ifname; ip route del $server_ip"
+  else info "To disconnect from VPN, run: $wg_quick down $wireguard_ifname"
   fi
 }
 
@@ -796,10 +825,8 @@ load_config() {
 #rm -f /opt/piavpn-manual/token /opt/piavpn-manual/latencyList
 # todo: recycle old token if not expired
 
-curl='curl --no-progress-meter' # make curl less verbose, but still show errors
-#curl='curl' # make curl less verbose, but still show errors
-# problem on openwrt:
-# curl: option --no-progress-meter: is unknown
+#curl='curl --no-progress-meter' # make curl less verbose, but still show errors
+curl='curl' # openwrt curl has no '--no-progress-meter'
 
 json_get() {
   json="$1"; filter="$2"
