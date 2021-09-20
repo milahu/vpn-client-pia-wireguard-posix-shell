@@ -1,0 +1,15 @@
+# piavpn.config.sh
+
+username=p1234567; password=YOUR_PASSWORD
+
+##protocol=wireguard; server_ip=212.102.49.36; server_name=madrid402
+#protocol=wireguard; server_ip=212.102.49.107; server_name=madrid401
+protocol=wireguard; region=spain
+
+#protocol=wireguard; server_ip=95.181.232.13; server_name=morocco403
+
+portforwarding=true
+
+#loglevel=debug
+#loglevel=trace
+
