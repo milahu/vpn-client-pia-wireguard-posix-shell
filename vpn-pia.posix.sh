@@ -229,7 +229,16 @@ fi
 
 
 # https://x-lore.kernel.org/wireguard/CACgDUr4BfbaLaP_csACp3Dk6c9GJ4py2w5TwurFjzZrhK1OPcQ@mail.gmail.com/T/
-wg_quick='./wg-quick.posix.sh'
+# FIXME
+#   INFO Start Wireguard connection: ./wg-quick.posix.sh up 'pia'
+#   [#] ip link add pia type wireguard
+#   [#] wg setconf pia /dev/stdin
+#   [#] ip -4 address add 10.33.247.95 dev pia
+#   sed: -e expression #1, char 48: unterminated `s' command
+#   [#] ip link delete dev pia
+#   FATAL Failed to start Wireguard interface 'pia'
+#wg_quick='./wg-quick.posix.sh'
+wg_quick='wg-quick'
 
 
 
