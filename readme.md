@@ -6,7 +6,7 @@ rewrite of https://github.com/pia-foss/manual-connections
 
 the goal was to run this on an openwrt router, but
 
-1. openwrt's curl lacks the `--connect-to "$name::$ip:"` feature
+1. ~~openwrt's curl lacks the `--connect-to "$name::$ip:"` feature~~ sorry, i confused something here. openwrt's curl does support the `--connect-to "$name::$ip:"` feature
 1. `wg-quick` is written in bash, so we would need to port that too ...
 
 
