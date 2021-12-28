@@ -11,10 +11,29 @@ the goal was to run this on an openwrt router, but
 
 
 
-### sample output
+## sample output
 
 <pre>
-<span color="turquoise">[user@nixos:~]$</span> ~/bin/_vpn connect
+<span color="turquoise">[user@nixos:~]$</span> sudo dash vpn-pia.posix.sh
+
+usage:
+run_setup.refactor.posix.headless.sh [--config CONFIG] command
+
+commands:
+  connect --> connect to VPN server
+  regions --> show regions, sorted by latency
+  servers --> show servers, sorted by latency
+
+options:
+  --config CONFIG --> use CONFIG as config file
+                      default: /etc/piavpn.config.sh
+</pre>
+
+### connect
+
+<pre>
+<span color="turquoise">[user@nixos:~]$</span> sudo dash vpn-pia.posix.sh connect
+
 <span color="green">SUCCESS</span> IPv6 is now disabled for better security. To enable IPv6 again, run: sysctl -w net.ipv6.conf.all.disable_ipv6=0 net.ipv6.conf.default.disable_ipv6=0
 <span color="green">INFO</span> Login ...
 <span color="green">SUCCESS</span> Login done, expires 2021-08-27T11:01:57Z+0200
@@ -53,3 +72,62 @@ the goal was to run this on an openwrt router, but
 <span color="green">INFO</span> Refreshed port 23456 on server 212.102.49.14 (madrid402) on 2021-08-28 13:19:01 +0200
 ...................................................................................................
 </pre>
+
+### regions
+
+compare regions by latency
+
+<pre>
+<span color="turquoise">[user@nixos:~]$</span> time sudo dash vpn-pia.posix.sh regions
+
+<span color="green">SUCCESS</span> Port Forwarding is enabled, will show only servers with PF
+
+198.94 qatar Qatar
+198.73 ca_vancouver CA Vancouver
+197.87 mexico Mexico
+
+[...]
+
+42.47 morocco Morocco
+42.32 nigeria Nigeria
+41.19 dz Algeria
+
+real	0m2.881s
+</pre>
+
+### servers
+
+compare servers by latency
+
+68 servers are pinged in 2.5 seconds
+
+output of the `servers` command can be copy-pasted to the config file
+
+<pre>
+<span color="turquoise">[user@nixos:~]$</span> time sudo dash vpn-pia.posix.sh servers
+
+<span color="green">SUCCESS</span> Port Forwarding is enabled, will show only servers with PF
+<span color="green">INFO</span> Showing servers only for protocol wireguard (key wg)
+
+198.80 country=QA; region=qatar # Qatar
+  protocol=wireguard; server_ip=95.181.234.9; server_name=qatar403
+
+196.82 country=PA; region=panama # Panama
+  protocol=wireguard; server_ip=91.90.126.6; server_name=panama403
+
+192.07 country=IN; region=in # India
+  protocol=wireguard; server_ip=45.120.139.133; server_name=mumbai402
+
+[...]
+
+41.33 country=DZ; region=dz # Algeria
+  protocol=wireguard; server_ip=176.125.228.5; server_name=algiers403
+
+41.29 country=AD; region=ad # Andorra
+  protocol=wireguard; server_ip=188.241.82.16; server_name=andorra404
+
+41.13 country=NG; region=nigeria # Nigeria
+  protocol=wireguard; server_ip=146.70.65.145; server_name=nigeria406
+
+real	0m2.407s
+```
