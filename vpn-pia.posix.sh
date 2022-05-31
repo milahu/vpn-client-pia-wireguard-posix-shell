@@ -377,7 +377,7 @@ ${pia_conf_dns}
 [Peer]
 PersistentKeepalive = 25
 PublicKey = ${server_key}
-AllowedIPs = 0.0.0.0/0
+AllowedIPs = ${allowed_ips}
 Endpoint = ${server_ip}:${server_port}
 
 EOF
@@ -754,6 +754,8 @@ password=your_password
 # optional settings
 #protocol=wireguard
 #portforwarding=false
+#allowed_ips="0.0.0.0/0" # route all traffic through VPN
+#allowed_ips="10.0.0.123/24" # route some traffic through VPN
 #forcedns=true
 #maxlatency=50 # milliseconds. maximum latency to auto-select server
 #colorterm=true
@@ -959,5 +961,6 @@ script_name="$0"
 server_name=''
 server_ip=''
 region=''
+allowed_ips="0.0.0.0/0"
 
 main "$@"
